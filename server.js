@@ -3,7 +3,9 @@ const app = express();
 const mongoose = require("mongoose");
 const listController = require("./routes/list")
 const signupModal = require("./models/signup-Modal");
-const listModel = require("./models/list");
+const signinModal=require("./models/signin-Modal");
+// const adminModal=require("./models/admin-Modal")
+// const listModel = require("./models/list");
 const { checkExistinguser, generatePasswordHash } = require("./utility")
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs")
@@ -31,16 +33,10 @@ app.listen(process.env.PORT || 3010, (err)=> {
 });
 
 
-//mongo db connection
-// const mongoDB = process.env.ATLAS_URI;
-// mongoose.connect(mongoDB, {}).then((res) => {
-//     console.log("connected to db")
-// }).catch((err) => {
-//     console.log(err)
-// })
+
 
 //mongoose.connect("mongodb://localhost/realEstate", (data)=> {
-   mongoose.connect("mongodb+srv://pranjay:Pranjay9199@cluster0.mzmgp.mongodb.net/realEstateData?retryWrites=true&w=majority",()=>{
+    mongoose.connect("mongodb+srv://Navyaa:Navya29@cluster0.vv8toxm.mongodb.net/?retryWrites=true&w=majority",()=>{ 
     console.log("Successfully connected to db");
 }, (err)=> {
     console.log(err)
@@ -48,7 +44,7 @@ app.listen(process.env.PORT || 3010, (err)=> {
 
 
 app.get('/', (req, res) => {
-    res.send("RealEstate Backend")
+    res.send("Employee Backend")
 })
 
 
@@ -70,7 +66,7 @@ app.post("/signup", async (req, res) => {
 
 
 app.post("/signin", (req, res) => {
-    signupModal.find({ email: req.body.email }).then((userData) => {
+    signinModal.find({ email: req.body.email }).then((userData) => {
 
         if (userData.length) {
             bcrypt.compare(req.body.password, userData[0].password).then((val) => {
@@ -89,57 +85,7 @@ app.post("/signin", (req, res) => {
 })
 
 
-app.post("/logout", (req, res) => {
-    authToken = ""
-    res.status(200).send("Loggedout sucessfully")
-})
 
 
-app.post('/add', (req, res) => {
-    const newProperty = listModel({
-        propertyType: req.body.propertyType,
-        price: req.body.price,
-        propertyAge: req.body.propertyAge,
-        propertyDiscription: req.body.propertyDiscription,
-        negotiable: req.body.negotiable,
-        ownership: req.body.ownership,
-        propertyApproved: req.body.propertApproved,
-        bankLoan: req.body.bankLoan,
-        length: req.body.length,
-        breadth: req.body.breadth,
-        totalArea: req.body.totalArea,
-        areaUnit: req.body.areaUnit,
-        noOfBHK: req.body.noOfBHK,
-        noOfFloor: req.body.noOfFloor,
-        attached: req.body.ttached,
-        westernToilet: req.body.westernToilet,
-        furnished: req.body.furnished,
-        carParking: req.body.carParking,
-        lift: req.body.lift,
-        electricity: req.body.electricity,
-        facing: req.body.facing,
-        name: req.body.name,
-        mobile: req.body.mobile,
-        postedBy: req.body.postedBy,
-        saleType: req.body.saleType,
-        featuredPackage: req.body.featuredPackage,
-        PPDPackage: req.body.PPDPackage,
-        email: req.body.email,
-        city: req.body.city,
-        area: req.body.area,
-        pincode: req.body.pincode,
-        address: req.body.address,
-        landmark: req.body.landmark,
-        latitude: req.body.latitude,
-        longitude: req.body.longitude,
-        views: 0, // default is 0
-        Status: "Unsold", // default is unsold
-        daysLeft: 10, //Defalt is 10
-    })
-    newProperty.save().then((data) => {
-        console.log('Property Added')
-        res.send('Property Added');
-    }).catch(err => console.log(err));
-});
 
 app.use("/list", listController);
